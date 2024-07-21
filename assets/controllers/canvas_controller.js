@@ -3,36 +3,43 @@ import Player from '../classes/Player.js';
 import CanvasEventListeners from '../classes/CanvasEventListeners.js';
 import Sprite from '../classes/Sprite.js';
 import '../data/collisions.js';
-import { collisionBlockArrayPopulaterFromRawData } from '../utils/kings-and-pigs-helpers-functions.js';
+import { animationsImageSrcResolver, collisionBlockArrayPopulaterFromRawData, imageSrcResolver } from '../utils/kings-and-pigs-helpers-functions.js';
 import { collisionsLevel1 } from '../data/collisions.js';
+import { playerAnimations } from '../data/player-animations.js';
+import { doorsLevel1 } from '../data/doors.js';
+import { backgroundLevel1 } from '../data/backgrounds.js';
 
 export default class extends Controller {
   static values = {
-    backgroundLevelOne: String,
+    backgroundLevelOneSprite: String,
+    playerIdleLeftSprite: String,
+    playerIdleRightSprite: String,
+    playerRunLeftSprite: String,
+    playerRunRightSprite: String,
+    playerEnterDoorSprite: String,
+    doorsLevelOneSprite: String,
   };
 
   static targets = ['toile'];
+
+  doors = [];
 
   nextPlayerNameIncrement = 0;
 
   connect() {
     let context = this.toileTarget.getContext('2d');
     this.#putCanvasIntoSixteenByNineRatio();
-    this.backgroundLevel1 = new Sprite(
-      {
-        position: {
-          x: 0,
-          y: 0,
-        },
-      },
-      this.backgroundLevelOneValue
-    );
+    this.backgroundLevelOneSprite = new Sprite(imageSrcResolver(backgroundLevel1, this.backgroundLevelOneSpriteValue));
     this.collisionsBlockLevel = collisionBlockArrayPopulaterFromRawData(collisionsLevel1);
-    this.#drawCanvas(context);
-    this.createPlayer();
 
-    this.canvasEventListeners = new CanvasEventListeners(this.player);
+    this.doors.push(new Sprite(imageSrcResolver(doorsLevel1, this.doorsLevelOneSpriteValue)));
+
+    this.createPlayer(this.collisionsBlockLevel, this.playerIdleLeftSpriteValue, 11, animationsImageSrcResolver(playerAnimations, this.playerIdleLeftSpriteValue, this.playerIdleRightSpriteValue, this.playerRunLeftSpriteValue, this.playerRunRightSpriteValue, this.playerEnterDoorSpriteValue));
+
+    this.canvasEventListeners = new CanvasEventListeners(this.player, this.doors);
+
     this.canvasEventListeners.fireKeyBoardEventListeners();
+
     this.animate(context);
   }
 
@@ -41,25 +48,23 @@ export default class extends Controller {
       this.animate(context);
     });
 
-    this.backgroundLevel1.drawSprite(context);
+    this.backgroundLevelOneSprite.draw(context);
 
-    this.#drawCollisionBlocksOnCanvas(this.collisionsBlockLevel, context);
+    this.#drawCollectionOfStuffOnCanvas(this.collisionsBlockLevel, context);
+    this.#drawCollectionOfStuffOnCanvas(this.doors, context);
 
     this.player.velocity.x = 0;
 
-    this.#changePlayerVelocityBasedOnKeyPressed();
-    this.player.drawPlayer(context);
-    this.player.updatePlayerAttributes(this.toileTarget);
+    this.canvasEventListeners.handleInput();
+
+    this.player.draw(context);
+
+    this.player.updatePlayerAttributes(context);
   };
 
-  #drawCanvas = (context) => {
-    context.fillStyle = 'white';
-    context.fillRect(0, 0, this.toileTarget.width, this.toileTarget.height);
-  };
-
-  #drawCollisionBlocksOnCanvas = (collisionBlocksArray, context) => {
-    collisionBlocksArray.forEach((collisionBlock) => {
-      collisionBlock.drawBlock(context);
+  #drawCollectionOfStuffOnCanvas = (collectionOfStuff, context) => {
+    collectionOfStuff.forEach((stuff) => {
+      stuff.draw(context);
     });
   };
 
@@ -68,24 +73,14 @@ export default class extends Controller {
     this.toileTarget.height = 576;
   };
 
-  // #clearCanvas = (context) => {
-  //   context.fillStyle = 'white';
-  //   context.fillRect(0, 0, this.toileTarget.width, this.toileTarget.height);
-  // };
-
-  createPlayer = () => {
+  createPlayer = (collisionBlocks, imageSrc, frameRate, animations) => {
     let nextPlayerName = this.nextPlayerNameIncrement === 0 ? 'player' : 'player'.this.nextPlayerNameIncrement;
     this[nextPlayerName] = new Player({
-      collisionBlocks: this.collisionsBlockLevel,
+      collisionBlocks: collisionBlocks,
+      imageSrc: imageSrc,
+      frameRate: frameRate,
+      animations: animations,
     });
     this.nextPlayerNameIncrement++;
-  };
-
-  #changePlayerVelocityBasedOnKeyPressed = () => {
-    if (this.canvasEventListeners.keysToListenTo.ArrowRight.pressed) {
-      this.player.velocity.x = 5;
-    } else if (this.canvasEventListeners.keysToListenTo.ArrowLeft.pressed) {
-      this.player.velocity.x = -5;
-    }
   };
 }

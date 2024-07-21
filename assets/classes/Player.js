@@ -1,13 +1,11 @@
-export default class Player {
-  constructor({ collisionBlocks = [] }) {
-    this.playerPositions = {
-      x: 100,
-      y: 100,
-    };
+import Sprite from './Sprite.js';
 
-    this.playerDimensions = {
-      width: 100,
-      height: 100,
+export default class Player extends Sprite {
+  constructor({ collisionBlocks = [], imageSrc, frameRate, animations }) {
+    super({ imageSrc, frameRate, animations });
+    this.position = {
+      x: 200,
+      y: 200,
     };
 
     this.velocity = {
@@ -15,44 +13,104 @@ export default class Player {
       y: 0,
     };
 
-    this.sides = {
-      bottom: this.playerPositions.y + this.playerDimensions.height,
-    };
-
     this.gravity = 1;
 
     this.collisionBlocks = collisionBlocks;
   }
 
-  drawPlayer(context) {
-    context.fillStyle = 'red';
-    context.fillRect(this.playerPositions.x, this.playerPositions.y, this.playerDimensions.width, this.playerDimensions.height);
+  updatePlayerAttributes(context) {
+    // context.fillStyle = 'rgba(0,0,255, 0.5)';
+    // context.fillRect(this.position.x, this.position.y, this.width, this.height);
+
+    this.position.x += this.velocity.x;
+
+    this.#updateHitbox();
+
+    this.#checkForHorizontalCollisions();
+
+    this.#applyGravity();
+
+    // context.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height);
+
+    this.#updateHitbox();
+
+    this.#checkForVerticalCollisions();
   }
 
-  updatePlayerAttributes(canvasItem) {
-    this.playerPositions.x += this.velocity.x;
+  switchSprite(name) {
+    if (this.image === this.animations[name].image) return;
+    this.currentFrame = 0;
+    this.image = this.animations[name].image;
+    this.frameRate = this.animations[name].frameRate;
+    this.frameBuffer = this.animations[name].frameBuffer;
+  }
 
+  #checkForHorizontalCollisions() {
+    // for block to check for horizontal collisions
     for (let i = 0; i < this.collisionBlocks.length; i++) {
       const collisionBlock = this.collisionBlocks[i];
-      if (this.playerPositions.x <= collisionBlock.position.x + collisionBlock.blockDimensions.width && this.playerPositions.x + this.playerDimensions.width >= collisionBlock.position.x && this.playerPositions.y + this.playerDimensions.height >= collisionBlock.position.y && this.playerPositions.y <= collisionBlock.position.y + collisionBlock.blockDimensions.height) {
-        if (this.velocity.x < -1) {
-          this.playerPositions.x = collisionBlock.position.x + collisionBlock.blockDimensions.width + 0.01;
+      // if a collision exists
+      if (this.hitbox.position.x <= collisionBlock.position.x + collisionBlock.width && this.hitbox.position.x + this.hitbox.width >= collisionBlock.position.x && this.hitbox.position.y + this.hitbox.height >= collisionBlock.position.y && this.hitbox.position.y <= collisionBlock.position.y + collisionBlock.height) {
+        // collision on x axis going to the elft
+        if (this.velocity.x < 0) {
+          // taking into account hitbox
+          const offset = this.hitbox.position.x - this.position.x;
+          this.position.x = collisionBlock.position.x + collisionBlock.width - offset + 0.01;
           break;
         }
-
-        if (this.velocity.x > 1) {
-          this.playerPositions.x = collisionBlock.position.x - this.playerDimensions.width - 0.01;
+        // collision on x axis going to the right
+        if (this.velocity.x > 0) {
+          // taking into account hitbox
+          const offset = this.hitbox.position.x - this.position.x + this.hitbox.width;
+          this.position.x = collisionBlock.position.x - offset - 0.01;
           break;
         }
       }
     }
-    this.playerPositions.y += this.velocity.y;
-    this.sides.bottom = this.playerPositions.y + this.playerDimensions.height;
-    // above bottom of canvas
-    if (this.sides.bottom + this.velocity.y < canvasItem.height) {
-      this.velocity.y += this.gravity;
-    } else {
-      this.velocity.y = 0;
+  }
+
+  #applyGravity() {
+    // apply gravity
+    this.velocity.y += this.gravity;
+    this.position.y += this.velocity.y;
+  }
+
+  #updateHitbox() {
+    this.hitbox = {
+      position: {
+        x: this.position.x + 58,
+        y: this.position.y + 34,
+      },
+      width: 50,
+      height: 50,
+    };
+  }
+
+  #checkForVerticalCollisions() {
+    // for block to check for vertical collisions
+    for (let i = 0; i < this.collisionBlocks.length; i++) {
+      const collisionBlock = this.collisionBlocks[i];
+      // if a collision exists
+      if (this.hitbox.position.x <= collisionBlock.position.x + collisionBlock.width && this.hitbox.position.x + this.hitbox.width >= collisionBlock.position.x && this.hitbox.position.y + this.hitbox.height >= collisionBlock.position.y && this.hitbox.position.y <= collisionBlock.position.y + collisionBlock.height) {
+        // collision on y axis going up
+        if (this.velocity.y < 0) {
+          // reset velocity to avoid out of boundariesthis.hitbox
+          this.velocity.y = 0;
+          // taking into account the hitbox
+          const offset = this.hitbox.position.y - this.position.y;
+          this.position.y = collisionBlock.position.y + collisionBlock.height - offset + 0.01;
+          break;
+        }
+        // collision on x axis going to the right
+        if (this.velocity.y > 0) {
+          // reset velocity to avoid out of boundaries
+          this.velocity.y = 0;
+          // taking into account hitbox
+          const offset = this.hitbox.position.y - this.position.y + this.hitbox.height;
+          this.position.y = collisionBlock.position.y - offset - 0.01;
+          break;
+        }
+      }
     }
   }
 }

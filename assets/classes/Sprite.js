@@ -1,16 +1,62 @@
 export default class Sprite {
-  constructor({ position }, imageSrc) {
+  constructor({ position, imageSrc, frameRate = 1, animations = false, frameBuffer = 2, loop = true, autoplay = true }) {
     this.position = position;
     this.image = new Image();
-    this.image.src = imageSrc;
+    this.loaded = false;
+
     this.image.onload = () => {
       this.loaded = true;
+      this.width = this.image.width / this.frameRate;
+      this.height = this.image.height;
     };
-    this.loaded = false;
+    this.image.src = imageSrc;
+    this.frameRate = frameRate;
+    this.currentFrame = 0;
+    this.elapsedFrames = 0;
+    this.frameBuffer = frameBuffer;
+    this.animations = animations;
+    this.loop = loop;
+    this.autoplay = autoplay;
+
+    if (this.animations) {
+      for (let key in this.animations) {
+        const image = new Image();
+        image.src = this.animations[key].imageSrc;
+        this.animations[key].image = image;
+      }
+    }
   }
 
-  drawSprite(context) {
+  draw(context) {
     if (!this.loaded) return;
-    context.drawImage(this.image, this.position.x, this.position.y);
+    const cropbox = {
+      position: {
+        x: this.width * this.currentFrame,
+        y: 0,
+      },
+      width: this.width,
+      height: this.height,
+    };
+    context.drawImage(this.image, cropbox.position.x, cropbox.position.y, cropbox.width, cropbox.height, this.position.x, this.position.y, this.width, this.height);
+
+    this.#updateFrames();
+  }
+
+  #updateFrames() {
+    if (!this.autoplay) return;
+
+    this.elapsedFrames++;
+
+    if (this.elapsedFrames % this.frameBuffer === 0) {
+      if (this.currentFrame < this.frameRate - 1) {
+        this.currentFrame++;
+      } else if (this.loop) {
+        this.currentFrame = 0;
+      }
+    }
+  }
+
+  #play() {
+    this.autoplay = true;
   }
 }

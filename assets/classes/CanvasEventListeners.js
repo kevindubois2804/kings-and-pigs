@@ -11,14 +11,26 @@ export default class CanvasEventListeners {
     },
   };
 
-  constructor(playerInstance) {
+  constructor(playerInstance, doors) {
     this.player = playerInstance;
+    this.doors = doors;
   }
 
   fireKeyBoardEventListeners = () => {
     window.addEventListener('keydown', (event) => {
+      if (this.player.preventInput) return;
       switch (event.key) {
         case 'ArrowUp':
+          for (let i = 0; i < this.doors.length; i++) {
+            const door = this.doors[i];
+            if (this.player.hitbox.position.x + this.player.hitbox.width <= door.position.x + door.width && this.player.hitbox.position.x >= door.position.x && this.player.hitbox.position.y + this.player.hitbox.height >= door.position.y && this.player.hitbox.position.y <= door.position.y + door.height) {
+              this.player.velocity.x = 0;
+              this.player.velocity.y = 0;
+              this.player.preventInput = true;
+              this.player.switchSprite('enterDoor');
+              return;
+            }
+          }
           if (this.player.velocity.y === 0) {
             this.player.velocity.y = -20;
           }
@@ -37,7 +49,6 @@ export default class CanvasEventListeners {
     });
 
     window.addEventListener('keyup', (event) => {
-      console.log(event);
       switch (event.key) {
         case 'ArrowRight':
           this.keysToListenTo.ArrowRight.pressed = false;
@@ -53,4 +64,23 @@ export default class CanvasEventListeners {
       }
     });
   };
+
+  handleInput() {
+    if (this.player.preventInput) return;
+    if (this.keysToListenTo.ArrowRight.pressed) {
+      this.player.switchSprite('runRight');
+      this.player.velocity.x = 5;
+      this.player.lastDirection = 'right';
+    } else if (this.keysToListenTo.ArrowLeft.pressed) {
+      this.player.switchSprite('runLeft');
+      this.player.velocity.x = -5;
+      this.player.lastDirection = 'left';
+    } else {
+      if (this.player.lastDirection === 'left') {
+        this.player.switchSprite('idleLeft');
+      } else {
+        this.player.switchSprite('idleRight');
+      }
+    }
+  }
 }
