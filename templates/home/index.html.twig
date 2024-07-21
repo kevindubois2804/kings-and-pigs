@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('styles/home.css') }}">
+{% endblock %}
+
+{% block body %}
+	<div data-controller="canvas" data-canvas-background-level-one-value="{{ asset('images/rooms/backgroundLevel1.png')}}">
+		<canvas data-canvas-target="toile"></canvas>
+	</div>
+{% endblock %}
