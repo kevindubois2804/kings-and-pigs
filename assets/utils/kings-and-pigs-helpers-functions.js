@@ -31,4 +31,36 @@ const collisionBlockArrayPopulaterFromRawData = (array) => {
   return result;
 };
 
-export { collisionBlockArrayPopulaterFromRawData };
+const animationsImageSrcResolver = (object, imageSrcIdleLeft, imageSrcIdleRight, imageSrcRunLeft, imageSrcRunRight, imageSrcEnterDoor) => {
+  let result = object;
+  for (const [key, value] of Object.entries(object)) {
+    switch (key) {
+      case 'idleLeft':
+        result[key].imageSrc = imageSrcIdleLeft;
+        break;
+      case 'idleRight':
+        result[key].imageSrc = imageSrcIdleRight;
+        break;
+      case 'runLeft':
+        result[key].imageSrc = imageSrcRunLeft;
+        break;
+      case 'runRight':
+        result[key].imageSrc = imageSrcRunRight;
+        break;
+      case 'enterDoor':
+        result[key].imageSrc = imageSrcEnterDoor;
+        break;
+      default:
+        break;
+    }
+  }
+  return result;
+};
+
+const imageSrcResolver = (object, imageSrc) => {
+  let result = object;
+  result.imageSrc = imageSrc;
+  return result;
+};
+
+export { collisionBlockArrayPopulaterFromRawData, animationsImageSrcResolver, imageSrcResolver };

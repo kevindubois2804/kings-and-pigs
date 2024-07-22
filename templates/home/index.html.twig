@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-	<div data-controller="canvas" data-canvas-background-level-one-value="{{ asset('images/rooms/backgroundLevel1.png')}}">
-		<canvas data-canvas-target="toile"></canvas>
+	<div data-controller="canvas" data-canvas-background-level-one-sprite-value="{{ asset('images/rooms/backgroundLevel1.png')}}" data-canvas-doors-level-one-sprite-value="{{ asset('images/rooms/doorOpen.png')}}" data-canvas-player-idle-right-sprite-value="{{ asset('images/king/idle.png')}}" data-canvas-player-idle-left-sprite-value="{{ asset('images/king/idleLeft.png')}}" data-canvas-player-run-left-sprite-value="{{ asset('images/king/runLeft.png')}}" data-canvas-player-run-right-sprite-value="{{ asset('images/king/runRight.png')}}" data-canvas-player-enter-door-sprite-value="{{ asset('images/king/enterDoor.png')}}">
+		<canvas data-canvas-target="canvas"></canvas>
 	</div>
 {% endblock %}
