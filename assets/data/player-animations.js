@@ -28,6 +28,9 @@ const playerAnimations = {
     frameBuffer: 4,
     loop: false,
     imageSrc: '../images/king/enterDoor.png',
+    onComplete: () => {
+      console.log('fini');
+    },
   },
 };
 

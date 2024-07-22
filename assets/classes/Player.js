@@ -1,8 +1,8 @@
 import Sprite from './Sprite.js';
 
 export default class Player extends Sprite {
-  constructor({ collisionBlocks = [], imageSrc, frameRate, animations }) {
-    super({ imageSrc, frameRate, animations });
+  constructor({ collisionBlocks = [], imageSrc, frameRate, animations, loop }) {
+    super({ imageSrc, frameRate, animations, loop });
     this.position = {
       x: 200,
       y: 200,
@@ -37,13 +37,15 @@ export default class Player extends Sprite {
     this.#checkForVerticalCollisions();
   }
 
-  switchSprite(name) {
-    if (this.image === this.animations[name].image) return;
-    this.currentFrame = 0;
-    this.image = this.animations[name].image;
-    this.frameRate = this.animations[name].frameRate;
-    this.frameBuffer = this.animations[name].frameBuffer;
-  }
+  // switchSprite(name) {
+  //   if (this.image === this.animations[name].image) return;
+  //   this.currentFrame = 0;
+  //   this.image = this.animations[name].image;
+  //   this.frameRate = this.animations[name].frameRate;
+  //   this.frameBuffer = this.animations[name].frameBuffer;
+  //   this.loop = this.animations[name].loop;
+  //   this.currentAnimation = this.animations[name];
+  // }
 
   #checkForHorizontalCollisions() {
     // for block to check for horizontal collisions

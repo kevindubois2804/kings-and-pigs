@@ -17,6 +17,7 @@ export default class Sprite {
     this.animations = animations;
     this.loop = loop;
     this.autoplay = autoplay;
+    this.currentAnimation;
 
     if (this.animations) {
       for (let key in this.animations) {
@@ -25,6 +26,17 @@ export default class Sprite {
         this.animations[key].image = image;
       }
     }
+  }
+
+  switchSprite(name) {
+    if (this.image === this.animations[name].image) return;
+    this.currentFrame = 0;
+    this.image = this.animations[name].image;
+    this.frameRate = this.animations[name].frameRate;
+    this.frameBuffer = this.animations[name].frameBuffer;
+    this.loop = this.animations[name].loop;
+    this.currentAnimation = this.animations[name];
+    this.currentAnimation.name = name;
   }
 
   draw(context) {
@@ -54,9 +66,17 @@ export default class Sprite {
         this.currentFrame = 0;
       }
     }
+
+    if (this.currentAnimation?.onComplete) {
+      if (this.currentFrame === this.frameRate - 1 && !this.currentAnimation.isActive) {
+        console.log(this.currentAnimation);
+        this.currentAnimation.onComplete();
+        this.currentAnimation.isActive = true;
+      }
+    }
   }
 
-  #play() {
+  play() {
     this.autoplay = true;
   }
 }

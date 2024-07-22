@@ -1,4 +1,4 @@
-export default class CanvasEventListeners {
+export default class InputHandler {
   keysToListenTo = {
     ArrowUp: {
       pressed: false,
@@ -28,6 +28,7 @@ export default class CanvasEventListeners {
               this.player.velocity.y = 0;
               this.player.preventInput = true;
               this.player.switchSprite('enterDoor');
+              door.play();
               return;
             }
           }

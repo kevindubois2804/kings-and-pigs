@@ -1,13 +1,14 @@
 import { Controller } from '@hotwired/stimulus';
 import Player from '../classes/Player.js';
-import CanvasEventListeners from '../classes/CanvasEventListeners.js';
 import Sprite from '../classes/Sprite.js';
+import InputHandler from '../classes/InputHandler.js';
 import '../data/collisions.js';
 import { animationsImageSrcResolver, collisionBlockArrayPopulaterFromRawData, imageSrcResolver } from '../utils/kings-and-pigs-helpers-functions.js';
 import { collisionsLevel1 } from '../data/collisions.js';
 import { playerAnimations } from '../data/player-animations.js';
 import { doorsLevel1 } from '../data/doors.js';
 import { backgroundLevel1 } from '../data/backgrounds.js';
+import gsap from 'gsap';
 
 export default class extends Controller {
   static values = {
@@ -20,14 +21,18 @@ export default class extends Controller {
     doorsLevelOneSprite: String,
   };
 
-  static targets = ['toile'];
+  static targets = ['canvas'];
 
   doors = [];
+
+  overlay = {
+    opacity: 0,
+  };
 
   nextPlayerNameIncrement = 0;
 
   connect() {
-    let context = this.toileTarget.getContext('2d');
+    let context = this.canvasTarget.getContext('2d');
     this.#putCanvasIntoSixteenByNineRatio();
     this.backgroundLevelOneSprite = new Sprite(imageSrcResolver(backgroundLevel1, this.backgroundLevelOneSpriteValue));
     this.collisionsBlockLevel = collisionBlockArrayPopulaterFromRawData(collisionsLevel1);
@@ -36,9 +41,9 @@ export default class extends Controller {
 
     this.createPlayer(this.collisionsBlockLevel, this.playerIdleLeftSpriteValue, 11, animationsImageSrcResolver(playerAnimations, this.playerIdleLeftSpriteValue, this.playerIdleRightSpriteValue, this.playerRunLeftSpriteValue, this.playerRunRightSpriteValue, this.playerEnterDoorSpriteValue));
 
-    this.canvasEventListeners = new CanvasEventListeners(this.player, this.doors);
+    this.inputHandler = new InputHandler(this.player, this.doors);
 
-    this.canvasEventListeners.fireKeyBoardEventListeners();
+    this.inputHandler.fireKeyBoardEventListeners();
 
     this.animate(context);
   }
@@ -55,11 +60,18 @@ export default class extends Controller {
 
     this.player.velocity.x = 0;
 
-    this.canvasEventListeners.handleInput();
+    this.inputHandler.handleInput();
 
     this.player.draw(context);
 
     this.player.updatePlayerAttributes(context);
+
+    if (this.player.currentAnimation?.name === 'enterDoor' && this.player.currentAnimation.isActive === true) {
+      gsap.to(this.overlay, {
+        opacity: 1,
+      });
+      this.#fadeInCanvas(context);
+    }
   };
 
   #drawCollectionOfStuffOnCanvas = (collectionOfStuff, context) => {
@@ -69,8 +81,8 @@ export default class extends Controller {
   };
 
   #putCanvasIntoSixteenByNineRatio = () => {
-    this.toileTarget.width = 1024;
-    this.toileTarget.height = 576;
+    this.canvasTarget.width = 1024;
+    this.canvasTarget.height = 576;
   };
 
   createPlayer = (collisionBlocks, imageSrc, frameRate, animations) => {
@@ -82,5 +94,16 @@ export default class extends Controller {
       animations: animations,
     });
     this.nextPlayerNameIncrement++;
+  };
+
+  #fadeInCanvas = (context) => {
+    context.save();
+
+    context.globalAlpha = this.overlay.opacity;
+
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, this.canvasTarget.width, this.canvasTarget.height);
+
+    context.restore();
   };
 }
