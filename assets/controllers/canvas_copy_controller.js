@@ -1,9 +1,19 @@
 import { Controller } from '@hotwired/stimulus';
 import Player from '../classes/Player.js';
+import Sprite from '../classes/Sprite.js';
+import InputHandler from '../classes/InputHandler.js';
+import '../data/collisions.js';
+import { collisionBlockArrayPopulaterFromRawData } from '../utils/kings-and-pigs-helpers-functions.js';
+import { collisionsLevel1 } from '../data/collisions.js';
+import { playerAnimations } from '../data/player.js';
+import { doorsLevel1 } from '../data/doors.js';
+import { backgroundLevel1 } from '../data/backgrounds.js';
 
-import GameBeta from '../classes/GameBeta.js';
+import gsap from 'gsap';
 
 export default class extends Controller {
+  static values = {};
+
   static targets = ['canvas'];
 
   doors = [];
@@ -12,68 +22,58 @@ export default class extends Controller {
     opacity: 0,
   };
 
+  nextPlayerNameIncrement = 0;
+
   connect() {
     let context = this.canvasTarget.getContext('2d');
+    this.#putCanvasIntoSixteenByNineRatio();
+    this.backgroundLevelOneSprite = new Sprite(backgroundLevel1);
+    this.collisionsBlockLevel = collisionBlockArrayPopulaterFromRawData(collisionsLevel1);
 
-    this.init(context);
+    this.doors.push(new Sprite(doorsLevel1));
+
+    this.createPlayer({
+      collisionBlocks: this.collisionsBlockLevel,
+      imageSrc: 'resources/player/idle.png',
+      frameRate: 11,
+      animations: playerAnimations,
+      overlay: this.overlay,
+      gsap: gsap,
+    });
+
+    this.inputHandler = new InputHandler(this.player, this.doors);
+
+    this.inputHandler.fireKeyBoardEventListeners();
 
     this.animate(context);
-
-    // this.backgroundLevelOneSprite = new Sprite(backgroundLevel1);
-    // this.collisionsBlockLevel = collisionBlockArrayPopulaterFromRawData(collisionsLevel1);
-    // this.doors.push(new Sprite(doorsLevel1));
-    // this.createPlayer({
-    //   collisionBlocks: this.collisionsBlockLevel,
-    //   imageSrc: 'resources/player/idle.png',
-    //   frameRate: 11,
-    //   animations: playerAnimations,
-    //   overlay: this.overlay,
-    //   gsap: gsap,
-    // });
-    // this.inputHandler = new InputHandler(this.player, this.doors);
-    // this.inputHandler.fireKeyBoardEventListeners();
-    // this.animate(context);
-  }
-
-  init(context) {
-    this.#putCanvasIntoSixteenByNineRatio();
-
-    this.game = new GameBeta({ context: context, width: this.canvasTarget.width, height: this.canvasTarget.height });
-
-    this.game.inputHandler.fireKeyBoardEventListeners();
-
-    console.log(this.game);
   }
 
   animate = (context) => {
     window.requestAnimationFrame(() => {
       this.animate(context);
     });
-    context.clearRect(0, 0, this.canvasTarget.width, this.canvasTarget.height);
-    this.game.update();
-    this.game.draw(context);
 
-    // this.backgroundLevelOneSprite.draw(context);
+    this.backgroundLevelOneSprite.draw(context);
 
-    // this.#drawCollectionOfStuffOnCanvas(this.collisionsBlockLevel, context);
-    // this.#drawCollectionOfStuffOnCanvas(this.doors, context);
+    this.#drawCollectionOfStuffOnCanvas(this.collisionsBlockLevel, context);
+    this.#drawCollectionOfStuffOnCanvas(this.doors, context);
 
-    // this.player.velocity.x = 0;
+    this.player.velocity.x = 0;
 
-    // this.inputHandler.handleInput();
+    this.inputHandler.handleInput();
 
-    // this.player.draw(context);
+    this.player.draw(context);
 
-    // this.player.updatePlayerAttributes(context);
+    this.player.updatePlayerAttributes(context);
 
-    // context.save();
+    context.save();
 
-    // context.globalAlpha = this.overlay.opacity;
+    context.globalAlpha = this.overlay.opacity;
 
-    // context.fillStyle = 'black';
-    // context.fillRect(0, 0, this.canvasTarget.width, this.canvasTarget.height);
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, this.canvasTarget.width, this.canvasTarget.height);
 
-    // context.restore();
+    context.restore();
 
     // if (this.player.currentAnimation?.name === 'enterDoor' && this.player.currentAnimation.isActive === true) {
     //   gsap.to(this.overlay, {

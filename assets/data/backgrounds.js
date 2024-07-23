@@ -3,7 +3,7 @@ const backgroundLevel1 = {
     x: 0,
     y: 0,
   },
-  imageSrc: '../images/rooms/backgroundLevel1.png',
+  imageSrc: 'resources/biomes/caves/level1/backgroundLevel1.png',
   frameRate: 2,
   frameBuffer: 50,
   loop: true,

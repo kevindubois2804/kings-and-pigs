@@ -1,4 +1,4 @@
-export default class CollisionBlock {
+export default class EnvironmentalCollisionBlockBeta {
   constructor({ position, height, width }) {
     this.position = position;
     this.width = width;

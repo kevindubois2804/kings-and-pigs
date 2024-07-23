@@ -1,7 +1,7 @@
-import gsap from 'gsap';
+import EntityBeta from './EntityBeta.js';
 
-export default class Sprite {
-  constructor({ position, imageSrc, frameRate = 1, animations = false, frameBuffer = 2, loop = true, autoplay = true, overlay, gsap }) {
+export default class SpriteBeta {
+  constructor({ position, imageSrc, frameRate = 1, animations = false, frameBuffer = 2, loop = true, autoplay = true }) {
     this.position = position;
     this.image = new Image();
     this.loaded = false;
@@ -20,10 +20,6 @@ export default class Sprite {
     this.loop = loop;
     this.autoplay = autoplay;
     this.currentAnimation;
-
-    this.overlay = overlay;
-    this.gsap = gsap;
-    console.log(this.gsap);
 
     if (this.animations) {
       for (let key in this.animations) {
@@ -56,6 +52,11 @@ export default class Sprite {
       height: this.height,
     };
     context.drawImage(this.image, cropbox.position.x, cropbox.position.y, cropbox.width, cropbox.height, this.position.x, this.position.y, this.width, this.height);
+    if (this instanceof EntityBeta) {
+      context.fillStyle = 'rgba(0,0,255, 0.5)';
+      context.fillRect(this.position.x, this.position.y, this.width, this.height);
+      context.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height);
+    }
 
     this.#updateFrames();
   }
@@ -76,8 +77,7 @@ export default class Sprite {
     if (this.currentAnimation?.onComplete) {
       if (this.currentFrame === this.frameRate - 1 && !this.currentAnimation.isActive) {
         console.log(this.currentAnimation);
-        this.currentAnimation.onComplete(this);
-        console.log(this.overlay);
+        this.currentAnimation.onComplete();
         this.currentAnimation.isActive = true;
       }
     }
