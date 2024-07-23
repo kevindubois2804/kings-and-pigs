@@ -2,6 +2,8 @@ import { Controller } from '@hotwired/stimulus';
 import Player from '../classes/Player.js';
 
 import GameBeta from '../classes/GameBeta.js';
+import IsaacChargerEnemyBeta from '../classes/enemies/IsaacChargerEnemyBeta.js';
+import { isaacChargerData } from '../data/enemies/isaac-charger.js';
 
 export default class extends Controller {
   static targets = ['canvas'];
@@ -41,6 +43,8 @@ export default class extends Controller {
     this.game = new GameBeta({ context: context, width: this.canvasTarget.width, height: this.canvasTarget.height });
 
     this.game.inputHandler.fireKeyBoardEventListeners();
+
+    this.game.addEnemy(new IsaacChargerEnemyBeta({ game: this.game, ...isaacChargerData }));
 
     console.log(this.game);
   }

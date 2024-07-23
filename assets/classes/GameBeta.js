@@ -20,9 +20,14 @@ export default class GameBeta {
       frameBuffer: 50,
       loop: true,
     });
+
+    this.enemies = [];
   }
   update() {
     this.player.update();
+    this.enemies.forEach((enemy) => {
+      enemy.update();
+    });
   }
 
   draw(context) {
@@ -35,7 +40,12 @@ export default class GameBeta {
     });
 
     this.player.draw(context);
+    this.enemies.forEach((enemy) => {
+      enemy.draw(context);
+    });
   }
 
-  loadLevels() {}
+  addEnemy(enemy) {
+    this.enemies.push(enemy);
+  }
 }
