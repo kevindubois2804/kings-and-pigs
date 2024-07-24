@@ -6,26 +6,32 @@ import SpriteBeta from './SpriteBeta.js';
 export default class LevelBeta {
   levelEnemies = [];
   levelDoors = [];
-  constructor({ game, levelId, levelEnvironmentalCollisionBlocksData, levelBackgroundData, enemiesData, doorsData }) {
+  constructor({ game, idLevel, levelEnvironmentalCollisionBlocksData, levelBackgroundData, enemiesData, doorsData, playerPosition }) {
     this.game = game;
-    this.levelId = levelId;
+    this.idLevel = idLevel;
     this.levelEnvironmentalCollisionBlocks = collisionBlockArrayPopulaterFromRawData(levelEnvironmentalCollisionBlocksData);
     this.levelBackground = new SpriteBeta(levelBackgroundData);
+
+    this.playerPosition = playerPosition;
 
     enemiesData.forEach((enemyData) => {
       const enemyClass = dynamicClass(enemyData.enemyType);
       this.levelEnemies.push(new enemyClass({ game: this.game, ...enemyData }));
     });
 
+    console.log(this.levelEnemies);
+
     doorsData.forEach((doorData) => {
       this.levelDoors.push(new DoorBeta({ ...doorData.spriteData, ...doorData.rawData }));
     });
-
-    console.log(this.levelDoors);
   }
 
   init() {
     this.game.player.environmentalCollisionBlocks = this.levelEnvironmentalCollisionBlocks;
+
+    this.levelEnemies.forEach((enemy) => {
+      enemy.environmentalCollisionBlocks = this.levelEnvironmentalCollisionBlocks;
+    });
   }
 
   update(context) {
@@ -48,5 +54,12 @@ export default class LevelBeta {
       enemy.draw(context);
       enemy.update(context);
     });
+  }
+
+  checkIfADoorHasBeenEntered() {
+    this.levelDoors.forEach((door) => {
+      if ((door.curentState = 'entered')) return true;
+    });
+    return false;
   }
 }

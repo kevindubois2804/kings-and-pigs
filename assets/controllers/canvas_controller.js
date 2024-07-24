@@ -4,48 +4,32 @@ import GameBeta from '../classes/GameBeta.js';
 export default class extends Controller {
   static targets = ['canvas'];
 
-  doors = [];
-
-  overlay = {
-    opacity: 0,
-  };
-
   connect() {
     let context = this.canvasTarget.getContext('2d');
+    this.canvasTarget.width = 1024;
+    this.canvasTarget.height = 576;
 
     this.init(context);
 
     this.animate(context);
-
-    // this.backgroundLevelOneSprite = new Sprite(backgroundLevel1);
-    // this.collisionsBlockLevel = collisionBlockArrayPopulaterFromRawData(collisionsLevel1);
-    // this.doors.push(new Sprite(doorsLevel1));
-    // this.createPlayer({
-    //   collisionBlocks: this.collisionsBlockLevel,
-    //   imageSrc: 'resources/player/idle.png',
-    //   frameRate: 11,
-    //   animations: playerAnimations,
-    //   overlay: this.overlay,
-    //   gsap: gsap,
-    // });
-    // this.inputHandler = new InputHandler(this.player, this.doors);
-    // this.inputHandler.fireKeyBoardEventListeners();
-    // this.animate(context);
   }
 
   init(context) {
-    this.game = new GameBeta({ context: context, width: this.canvasTarget.width, height: this.canvasTarget.height });
-
-    this.game.canvasHandler.putCanvasIntoSixteenByNineRatio(this.canvasTarget);
+    this.game = new GameBeta({ context: context, canvasWidth: this.canvasTarget.width, canvasHeight: this.canvasTarget.height });
 
     this.game.eventHandler.fireKeyBoardEventListeners();
 
-    this.game.level.init();
+    this.game.biome.currentLevel.init();
   }
 
   animate = (context) => {
     context.clearRect(0, 0, this.canvasTarget.width, this.canvasTarget.height);
+
     this.game.update(context);
+
+    if (this.game.currentState === 'PAUSED') this.game.canvasHandler.fadeCanvas();
+
+    if (this.game.biome.currentLevel.checkIfADoorHasBeenEntered()) this.game.canvasHandler.fadeCanvas();
     // this.game.draw(context);
     window.requestAnimationFrame(() => {
       this.animate(context);

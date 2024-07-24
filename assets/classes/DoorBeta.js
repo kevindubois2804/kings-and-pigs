@@ -6,9 +6,7 @@ export default class DoorBeta extends SpriteBeta {
 
     this.position = position;
 
-    this.currentState = 'opened'; // 'closed'
-
-    this.idDoor = idDoor;
+    this.currentState = 'entered'; // 'closed'
 
     this.idLevelAssociated = idLevelAssociated;
   }

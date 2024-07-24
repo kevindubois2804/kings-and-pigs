@@ -1,21 +1,33 @@
 export default class CanvasHandlerBeta {
-  constructor({ game }) {
+  constructor({ game, context, canvasWidth, canvasHeight }) {
     this.game = game;
 
     this.overlay = {
       opacity: 0,
     };
+
+    this.context = context;
+
+    this.canvasWidth = canvasWidth;
+
+    this.canvasHeight = canvasHeight;
   }
 
-  fadeCanvas = (context) => {
-    context.save();
+  fadeCanvas = (fadeIn = true) => {
+    // const opacityValue = fadeIn ? 1 : 0;
 
-    context.globalAlpha = this.overlay.opacity;
+    // this.game.utils.gsap.to(this.overlay, {
+    //   opacity: opacityValue,
+    // });
 
-    context.fillStyle = 'black';
-    context.fillRect(0, 0, this.canvasTarget.width, this.canvasTarget.height);
+    this.context.save();
 
-    context.restore();
+    this.context.globalAlpha = this.overlay.opacity;
+
+    this.context.fillStyle = 'black';
+    this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+    this.context.restore();
   };
 
   putCanvasIntoSixteenByNineRatio = (canvasTarget) => {
