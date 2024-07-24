@@ -65,4 +65,23 @@ export default class InputHandlerBeta {
       }
     });
   };
+
+  handleInput() {
+    if (this.preventInput) return;
+    if (this.keysToListenTo.ArrowRight.pressed) {
+      this.player.switchSprite('runRight');
+      this.player.velocity.x += this.player.originalVelocity.x;
+      this.player.lastDirection = 'right';
+    } else if (this.keysToListenTo.ArrowLeft.pressed) {
+      this.player.switchSprite('runLeft');
+      this.player.velocity.x -= this.player.originalVelocity.x;
+      this.player.lastDirection = 'left';
+    } else {
+      if (this.player.lastDirection === 'left') {
+        this.player.switchSprite('idleLeft');
+      } else {
+        this.player.switchSprite('idleRight');
+      }
+    }
+  }
 }

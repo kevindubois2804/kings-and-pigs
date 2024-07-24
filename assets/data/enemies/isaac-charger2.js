@@ -1,15 +1,15 @@
-const isaacChargerData = {
+const isaacCharger2Data = {
   enemyType: 'IsaacChargerEnemyBeta',
   environmentalCollisionBlocksData: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 0, 0, 292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292, 0, 0, 292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292, 0, 0, 292, 292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 292, 0, 0, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 292, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   imageSrc: 'resources/enemies/isaac-charger/idle.png',
   frameRate: 1,
   frameBuffer: 5,
   position: {
-    x: 250,
+    x: 350,
     y: 200,
   },
   velocity: {
-    x: 2,
+    x: 1,
     y: 0,
   },
   hitbox: {
@@ -42,4 +42,4 @@ const isaacChargerData = {
   autoplay: true,
 };
 
-export { isaacChargerData };
+export { isaacCharger2Data };

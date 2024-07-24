@@ -2,19 +2,30 @@ import { collisionBlockArrayPopulaterFromRawData, collisionStatement } from '../
 import SpriteBeta from './SpriteBeta.js';
 
 export default class EntityBeta extends SpriteBeta {
-  constructor({ game, position, hitbox = {}, environmentalCollisionBlocks = [], imageSrc, frameRate = 1, frameBuffer = 2, animations = false, loop = true }) {
+  constructor({
+    game,
+    position,
+    hitbox = {},
+    velocity = {
+      x: 0,
+      y: 0,
+    },
+    environmentalCollisionBlocksData = [],
+    imageSrc,
+    frameRate = 1,
+    frameBuffer = 2,
+    animations = false,
+    loop = true,
+  }) {
     super({ imageSrc, frameRate, animations, loop, frameBuffer });
 
     this.game = game;
 
-    this.environmentalCollisionBlocks = collisionBlockArrayPopulaterFromRawData(environmentalCollisionBlocks);
+    this.environmentalCollisionBlocks = collisionBlockArrayPopulaterFromRawData(environmentalCollisionBlocksData);
 
     this.position = position;
 
-    this.velocity = {
-      x: 0,
-      y: 0,
-    };
+    this.velocity = velocity;
 
     this.gravity = 1;
 
@@ -31,9 +42,21 @@ export default class EntityBeta extends SpriteBeta {
       width: hitbox.width,
       height: hitbox.height,
     };
+
+    this.originalVelocity = {
+      x: velocity.x,
+      y: velocity.y,
+    };
   }
 
   update() {}
+
+  draw(context) {
+    super.draw(context);
+    context.fillStyle = 'rgba(0,0,255, 0.5)';
+    context.fillRect(this.position.x, this.position.y, this.width, this.height);
+    context.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height);
+  }
 
   checkForVerticalCollisions() {
     // for block to check for vertical collisions
@@ -75,14 +98,16 @@ export default class EntityBeta extends SpriteBeta {
         })
       ) {
         // collision on x axis going to the elft
-        if (this.velocity.x < 0) {
+        if (this.velocity.x < -0.1) {
+          // this.velocity.x = 0;
           // taking into account hitbox
           const offset = this.hitbox.position.x - this.position.x;
           this.position.x = environmentalCollisionBlock.position.x + environmentalCollisionBlock.width - offset + 0.01;
           break;
         }
         // collision on x axis going to the right
-        if (this.velocity.x > 0) {
+        if (this.velocity.x > 0.1) {
+          // this.velocity.x = 0;
           // taking into account hitbox
           const offset = this.hitbox.position.x - this.position.x + this.hitbox.width;
           this.position.x = environmentalCollisionBlock.position.x - offset - 0.01;
@@ -91,6 +116,12 @@ export default class EntityBeta extends SpriteBeta {
       }
     }
   }
+
+  // checkForHorizontalCanvasCollision() {
+  //   if (this.hitbox.position.x + this.hitbox.width + this.velocity.x >= 576 || this.hitbox.position.x + this.velocity.x <= 0) {
+  //     this.velocity.x = 0;
+  //   }
+  // }
 
   applyGravity() {
     // apply gravity

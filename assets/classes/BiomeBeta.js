@@ -1,9 +1,10 @@
 import { collisionBlockArrayPopulaterFromRawData } from '../utils/kings-and-pigs-helpers-functions-beta';
-import SpriteBeta from './SpriteBeta';
+import LevelBeta from './LevelBeta';
 
 export default class BiomeBeta {
-  name;
-  currentLevel;
-  levels;
-  constructor() {}
+  biomeLevelsData = [];
+  constructor(game, biomeLevelsData) {
+    this.game = game;
+    biomeLevelsData.forEach((levelData) => this.biomeLevelsData.push(new LevelBeta(levelData)));
+  }
 }

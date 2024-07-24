@@ -1,5 +1,3 @@
-import EntityBeta from './EntityBeta.js';
-
 export default class SpriteBeta {
   constructor({ position, imageSrc, frameRate = 1, animations = false, frameBuffer = 2, loop = true, autoplay = true }) {
     this.position = position;
@@ -52,16 +50,11 @@ export default class SpriteBeta {
       height: this.height,
     };
     context.drawImage(this.image, cropbox.position.x, cropbox.position.y, cropbox.width, cropbox.height, this.position.x, this.position.y, this.width, this.height);
-    if (this instanceof EntityBeta) {
-      context.fillStyle = 'rgba(0,0,255, 0.5)';
-      context.fillRect(this.position.x, this.position.y, this.width, this.height);
-      context.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height);
-    }
 
-    this.#updateFrames();
+    this.updateFrames();
   }
 
-  #updateFrames() {
+  updateFrames() {
     if (!this.autoplay) return;
 
     this.elapsedFrames++;

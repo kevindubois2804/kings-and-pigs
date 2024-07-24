@@ -5,7 +5,6 @@ import InputHandler from '../classes/InputHandler.js';
 import '../data/collisions.js';
 import { collisionBlockArrayPopulaterFromRawData } from '../utils/kings-and-pigs-helpers-functions.js';
 import { collisionsLevel1 } from '../data/collisions.js';
-import { playerAnimations } from '../data/player.js';
 import { doorsLevel1 } from '../data/doors.js';
 import { backgroundLevel1 } from '../data/backgrounds.js';
 

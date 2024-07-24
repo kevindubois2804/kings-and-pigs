@@ -1,16 +1,23 @@
 import Sprite from './Sprite.js';
 
 export default class Player extends Sprite {
-  constructor({ collisionBlocks = [], imageSrc, frameRate, animations, loop, overlay, gsap }) {
+  constructor({
+    collisionBlocks = [],
+    imageSrc,
+    velocity = {
+      x: 0,
+      y: 0,
+    },
+    frameRate,
+    animations,
+    loop,
+    overlay,
+    gsap,
+  }) {
     super({ imageSrc, frameRate, animations, loop, overlay, gsap });
     this.position = {
       x: 200,
       y: 200,
-    };
-
-    this.velocity = {
-      x: 0,
-      y: 0,
     };
 
     this.gravity = 1;
@@ -26,7 +33,7 @@ export default class Player extends Sprite {
 
     this.#updateHitbox();
 
-    this.#checkForHorizontalCollisions();
+    this.#checkForHorizontalCanvasCollisions();
 
     this.#applyGravity();
 
@@ -34,10 +41,10 @@ export default class Player extends Sprite {
 
     this.#updateHitbox();
 
-    this.#checkForVerticalCollisions();
+    this.#checkForVerticalCanvasCollisions();
   }
 
-  #checkForHorizontalCollisions() {
+  #checkForHorizontalCanvasCollisions() {
     // for block to check for horizontal collisions
     for (let i = 0; i < this.collisionBlocks.length; i++) {
       const collisionBlock = this.collisionBlocks[i];
@@ -78,7 +85,7 @@ export default class Player extends Sprite {
     };
   }
 
-  #checkForVerticalCollisions() {
+  #checkForVerticalCanvasCollisions() {
     // for block to check for vertical collisions
     for (let i = 0; i < this.collisionBlocks.length; i++) {
       const collisionBlock = this.collisionBlocks[i];
