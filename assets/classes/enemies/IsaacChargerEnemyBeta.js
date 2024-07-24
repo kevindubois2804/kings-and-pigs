@@ -3,6 +3,7 @@ import EnemyBeta from '../EnemyBeta.js';
 export default class IsaacChargerEnemyBeta extends EnemyBeta {
   constructor({
     game,
+    enemyId,
     position,
     hitbox = {},
     velocity = {
@@ -16,6 +17,8 @@ export default class IsaacChargerEnemyBeta extends EnemyBeta {
     loop,
   }) {
     super({ game, position, hitbox, velocity, imageSrc, environmentalCollisionBlocksData, frameRate, animations, loop });
+
+    this.enemyId = enemyId;
   }
 
   update() {

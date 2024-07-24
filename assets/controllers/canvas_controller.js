@@ -23,14 +23,16 @@ export default class extends Controller {
   }
 
   animate = (context) => {
+    this.game.eventHandler.fireLevelEvents();
+
     context.clearRect(0, 0, this.canvasTarget.width, this.canvasTarget.height);
 
     this.game.update(context);
 
-    if (this.game.currentState === 'PAUSED') this.game.canvasHandler.fadeCanvas();
+    if (this.game.currentState === 'ONLEVELTRANSITION') this.game.canvasHandler.fadeCanvas();
 
-    if (this.game.biome.currentLevel.checkIfADoorHasBeenEntered()) this.game.canvasHandler.fadeCanvas();
-    // this.game.draw(context);
+    // if (this.game.biome.currentLevel.checkIfADoorHasBeenEntered()) this.game.canvasHandler.fadeCanvas();
+
     window.requestAnimationFrame(() => {
       this.animate(context);
     });

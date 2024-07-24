@@ -19,8 +19,6 @@ export default class LevelBeta {
       this.levelEnemies.push(new enemyClass({ game: this.game, ...enemyData }));
     });
 
-    console.log(this.levelEnemies);
-
     doorsData.forEach((doorData) => {
       this.levelDoors.push(new DoorBeta({ ...doorData.spriteData, ...doorData.rawData }));
     });

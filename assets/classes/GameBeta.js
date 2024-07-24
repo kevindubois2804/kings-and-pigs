@@ -1,4 +1,5 @@
 import { biome1Data } from '../data/biome/biome1/biome1.js';
+import { biome1Level1Events } from '../data/events/biome1/biome-1-level-1-events.js';
 import { globalEvents } from '../data/events/global/global.js';
 import { playerData } from '../data/player.js';
 import BiomeBeta from './BiomeBeta.js';
@@ -13,10 +14,12 @@ export default class GameBeta {
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
     this.context = context;
+
     this.utils = new UtilsBeta({ game: this });
     this.canvasHandler = new CanvasHandlerBeta({ game: this, context: context, canvasWidth: canvasWidth, canvasHeight: canvasHeight });
     this.player = new PlayerBeta({ game: this, ...playerData });
-    this.eventHandler = new EventHandlerBeta({ game: this, globalEvents });
+    this.eventHandler = new EventHandlerBeta({ game: this, globalEvents: globalEvents, levelEvents: biome1Level1Events });
+
     this.playerInputHandler = new PlayerInputHandlerBeta({ game: this });
 
     this.biome = new BiomeBeta({ game: this, biomeLevelsData: biome1Data });

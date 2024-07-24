@@ -1,7 +1,7 @@
 export default class EventHandlerBeta {
-  globalEvents;
+  globalEvents = [];
 
-  localEvents;
+  levelEvents = [];
 
   keys = {
     ArrowUp: {
@@ -15,13 +15,17 @@ export default class EventHandlerBeta {
     },
   };
 
-  constructor({ game, globalEvents }) {
+  constructor({ game, globalEvents, levelEvents }) {
     this.game = game;
-
-    this.globalEvents = globalEvents;
-    // this.doors = doors;
-
     this.preventEvents = false;
+
+    globalEvents.map((globalevent) => {
+      this.globalEvents.push(globalevent);
+    });
+
+    levelEvents.map((levelevent) => {
+      this.levelEvents.push(levelevent);
+    });
   }
 
   fireKeyBoardEventListeners = () => {
@@ -83,4 +87,18 @@ export default class EventHandlerBeta {
   preventEventsToFire() {
     this.preventEvents = true;
   }
+
+  allowEventsToFire() {
+    this.preventEvents = false;
+  }
+
+  fireLevelEvents() {
+    this.levelEvents.forEach((event) =>
+      event.enemyCollisionCases.forEach((enemyCollisionCase) => {
+        enemyCollisionCase.fire(this);
+      })
+    );
+  }
+
+  loadEvents() {}
 }

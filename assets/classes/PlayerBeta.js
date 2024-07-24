@@ -33,4 +33,8 @@ export default class PlayerBeta extends EntityBeta {
 
     this.velocity.x = 0;
   }
+
+  checkIfPlayerCollideWithADoor(player, door) {
+    return player.hitbox.position.x + player.hitbox.width <= door.position.x + door.width && player.hitbox.position.x >= door.position.x && player.hitbox.position.y + player.hitbox.height >= door.position.y && player.hitbox.position.y <= door.position.y + door.height;
+  }
 }
