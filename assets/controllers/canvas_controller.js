@@ -34,13 +34,13 @@ export default class extends Controller {
   }
 
   init(context) {
-    this.#putCanvasIntoSixteenByNineRatio();
-
     this.game = new GameBeta({ context: context, width: this.canvasTarget.width, height: this.canvasTarget.height });
 
-    this.game.level.init();
+    this.game.canvasHandler.putCanvasIntoSixteenByNineRatio(this.canvasTarget);
 
-    this.game.inputHandler.fireKeyBoardEventListeners();
+    this.game.eventHandler.fireKeyBoardEventListeners();
+
+    this.game.level.init();
   }
 
   animate = (context) => {
@@ -50,21 +50,5 @@ export default class extends Controller {
     window.requestAnimationFrame(() => {
       this.animate(context);
     });
-  };
-
-  #putCanvasIntoSixteenByNineRatio = () => {
-    this.canvasTarget.width = 1024;
-    this.canvasTarget.height = 576;
-  };
-
-  #fadeInCanvas = (context) => {
-    context.save();
-
-    context.globalAlpha = this.overlay.opacity;
-
-    context.fillStyle = 'black';
-    context.fillRect(0, 0, this.canvasTarget.width, this.canvasTarget.height);
-
-    context.restore();
   };
 }

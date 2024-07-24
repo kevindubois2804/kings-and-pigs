@@ -45,15 +45,6 @@ const playerData = {
       frameBuffer: 4,
       loop: false,
       imageSrc: 'resources/player/enterDoor.png',
-      onComplete: (argument) => {
-        argument.gsap.to(argument.overlay, {
-          opacity: 1,
-        });
-        // const args = 'argument';
-        // const body = 'argument.gsap.to(argument.overlay, ' + curlyBraceLeft + 'opacity: 1,' + curlyBraceRight + ');';
-        // console.log(new Function(args, body));
-        // new Function(args, body)();
-      },
     },
   },
   loop: true,

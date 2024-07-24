@@ -19,12 +19,19 @@ export default class IsaacChargerEnemyBeta extends EnemyBeta {
   }
 
   update() {
-    this.handleMovement();
+    this.position.x += this.velocity.x;
+
     this.updateHitbox();
+
     this.checkForHorizontalCollisions();
+
     this.applyGravity();
+
     this.updateHitbox();
+
     this.checkForVerticalCollisions();
+
+    this.velocity.x = 0;
   }
 
   handleMovement() {
@@ -32,12 +39,10 @@ export default class IsaacChargerEnemyBeta extends EnemyBeta {
     const middleHitBoxPlayerAlongXAxis = this.game.player.hitbox.position.x + this.game.player.hitbox.width / 2;
     if (middleHitBoxPlayerAlongXAxis > middleHitBoxEnemyAlongXAxis) {
       this.switchSprite('moveRight');
-      this.velocity.x = this.originalVelocity.x;
-      this.position.x += this.velocity.x;
+      this.velocity.x += this.originalVelocity.x;
     } else if (middleHitBoxPlayerAlongXAxis < middleHitBoxEnemyAlongXAxis) {
       this.switchSprite('moveLeft');
-      this.velocity.x = this.originalVelocity.x;
-      this.position.x -= this.velocity.x;
+      this.velocity.x -= this.originalVelocity.x;
     } else {
       this.velocity.x = 0;
       this.position.x += this.velocity.x;

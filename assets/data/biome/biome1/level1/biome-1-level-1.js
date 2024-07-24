@@ -18,6 +18,25 @@ const biomeOneLevelOneData = {
     { enemyId: 1, ...isaacChargerData },
     { enemyId: 2, ...isaacCharger2Data },
   ],
+  doorsData: [
+    {
+      spriteData: {
+        position: {
+          x: 767,
+          y: 270,
+        },
+        imageSrc: 'resources/biomes/caves/level1/doorOpen.png',
+        frameRate: 5,
+        frameBuffer: 5,
+        loop: false,
+        autoplay: false,
+      },
+      idData: {
+        levelId: 2,
+        doorId: 1,
+      },
+    },
+  ],
 };
 
 export { biomeOneLevelOneData };

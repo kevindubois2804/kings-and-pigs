@@ -117,12 +117,6 @@ export default class EntityBeta extends SpriteBeta {
     }
   }
 
-  // checkForHorizontalCanvasCollision() {
-  //   if (this.hitbox.position.x + this.hitbox.width + this.velocity.x >= 576 || this.hitbox.position.x + this.velocity.x <= 0) {
-  //     this.velocity.x = 0;
-  //   }
-  // }
-
   applyGravity() {
     // apply gravity
     this.velocity.y += this.gravity;

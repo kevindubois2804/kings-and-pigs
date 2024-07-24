@@ -79,4 +79,10 @@ export default class SpriteBeta {
   play() {
     this.autoplay = true;
   }
+
+  playOnce() {
+    this.autoplay = true;
+
+    if (this.currentFrame === this.frameRate - 1) this.autoplay = false;
+  }
 }
